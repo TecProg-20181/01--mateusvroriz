@@ -61,8 +61,9 @@ Image sepia_filter(Image img){
   return img;
 }
 
-Image blur(int T, Image img) {
-
+Image blur(Image img) {
+    int size = 0;
+    scanf("%d", &size);
     Image image = img;
 
     for (unsigned int i = 0; i < image.height; ++i) {
@@ -152,7 +153,11 @@ Image invert_colors(Image img){
     return invertedimage;
 }
 
-Image crop_image(Image img, int x, int y, int width, int height) {
+Image crop_image(Image img) {
+  int x, y;
+  scanf("%d %d", &x, &y);
+  int width, height;
+  scanf("%d %d", &width, &height);
     Image cropped;
 
     cropped.width = width;
@@ -208,9 +213,7 @@ int main() {
                 break;
             }
             case 3: { // Blur
-                int size = 0;
-                scanf("%d", &size);
-                img = blur(size, img);
+                img = blur(img);
                 break;
             }
             case 4: { // Rotation
@@ -231,12 +234,7 @@ int main() {
                 break;
             }
             case 7: { // Cropping image
-                int x, y;
-                scanf("%d %d", &x, &y);
-                int width, height;
-                scanf("%d %d", &width, &height);
-
-                img = crop_image(img, x, y, width, height);
+                img = crop_image(img);
                 break;
             }
         }
