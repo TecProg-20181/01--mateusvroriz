@@ -7,7 +7,7 @@ typedef struct _pixel {
 } Pixel;
 
 typedef struct _image {
-    Pixel pixel[512][512]; 
+    Pixel pixel[512][512];
     unsigned int width;
     unsigned int height;
 } Image;
@@ -35,6 +35,30 @@ Image grey_scale(Image img) {
     }
 
     return img;
+}
+Image sepia_filter(Image img){
+  Image sepia;
+  for (unsigned int x = 0; x < img.height; ++x) {
+      for (unsigned int j = 0; j < img.width; ++j) {
+
+        sepia.pixel[x][j].red = img.pixel[x][j].red;
+        sepia.pixel[x][j].green = img.pixel[x][j].green;
+        sepia.pixel[x][j].blue = img.pixel[x][j].blue;
+
+        int p =  sepia.pixel[x][j].red * .393 + sepia.pixel[x][j].green * .769 + sepia.pixel[x][j].blue * .189;
+        int menor_r = (255 >  p) ? p : 255;
+        img.pixel[x][j].red = menor_r;
+
+        p =  sepia.pixel[x][j].red * .349 + sepia.pixel[x][j].green * .686 + sepia.pixel[x][j].blue * .168;
+        menor_r = (255 >  p) ? p : 255;
+        img.pixel[x][j].green = menor_r;
+
+        p =  sepia.pixel[x][j].red * .272 + sepia.pixel[x][j].green * .534 + sepia.pixel[x][j].blue * .131;
+        menor_r = (255 >  p) ? p : 255;
+        img.pixel[x][j].blue = menor_r;
+    }
+  }
+  return img;
 }
 
 Image blur(int T, Image img) {
@@ -85,15 +109,15 @@ Image rotate90right(Image img) {
 }
 
 Image invert_colors(Image img){
-    Image image = img;
-    for (unsigned int i = 0; i < image.height; ++i) {
-        for (unsigned int j = 0; j < image.width; ++j) {
-            image.pixel[i][j].red = 255 - image.pixel[i][j].red;
-            image.pixel[i][j].green = 255 - image.pixel[i][j].green;
-            image.pixel[i][j].blue = 255 - image.pixel[i][j].blue;
+    Image invertedimage = img;
+    for (unsigned int i = 0; i < invertedimage.height; ++i) {
+        for (unsigned int j = 0; j < invertedimage.width; ++j) {
+            invertedimage.pixel[i][j].red = 255 - invertedimage.pixel[i][j].red;
+            invertedimage.pixel[i][j].green = 255 - invertedimage.pixel[i][j].green;
+            invertedimage.pixel[i][j].blue = 255 - invertedimage.pixel[i][j].blue;
         }
     }
-    return image;
+    return invertedimage;
 }
 
 Image crop_image(Image img, int x, int y, int width, int height) {
@@ -143,32 +167,12 @@ int main() {
         scanf("%d", &option);
 
         switch(option) {
-            case 1: { 
+            case 1: {
                 img = grey_scale(img);
                 break;
             }
             case 2: { //Sepia Filter
-                for (unsigned int x = 0; x < img.height; ++x) {
-                    for (unsigned int j = 0; j < img.width; ++j) {
-                       Pixel pixel;
-                        pixel.red = img.pixel[x][j].red;
-                        pixel.green = img.pixel[x][j].green;
-                        pixel.blue = img.pixel[x][j].blue;
-
-                        int p =  pixel.red * .393 + pixel.green * .769 + pixel.blue * .189;
-                        int menor_r = (255 >  p) ? p : 255;
-                        img.pixel[x][j].red = menor_r;
-
-                        p =  pixel.red * .349 + pixel.green * .686 + pixel.blue * .168;
-                        menor_r = (255 >  p) ? p : 255;
-                        img.pixel[x][j].green = menor_r;
-
-                        p =  pixel.red * .272 + pixel.green * .534 + pixel.blue * .131;
-                        menor_r = (255 >  p) ? p : 255;
-                        img.pixel[x][j].blue = menor_r;
-                    }
-                }
-
+                img = sepia_filter(img);
                 break;
             }
             case 3: { // Blur
