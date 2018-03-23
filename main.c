@@ -108,6 +108,38 @@ Image rotate90right(Image img) {
     return rotated;
 }
 
+Image mirroring(Image img){
+int horizontal = 0;
+scanf("%d", &horizontal);
+
+int width = img.width, height = img.height;
+  Image mirror = img;
+if (horizontal == 1) width /= 2;
+else height /= 2;
+
+for (int i2 = 0; i2 < height; ++i2) {
+    for (int j = 0; j < width; ++j) {
+        int x = i2, y = j;
+
+        if (horizontal == 1) y = img.width - 1 - j;
+        else x = img.height - 1 - i2;
+
+        Pixel aux1;
+        aux1.red = img.pixel[i2][j].red;
+        aux1.green = img.pixel[i2][j].green;
+        aux1.blue = img.pixel[i2][j].blue;
+
+        mirror.pixel[i2][j].red = mirror.pixel[x][y].red;
+        mirror.pixel[i2][j].green = mirror.pixel[x][y].green;
+        mirror.pixel[i2][j].blue = mirror.pixel[x][y].blue;
+
+        mirror.pixel[x][y].red = aux1.red;
+        mirror.pixel[x][y].green = aux1.green;
+        mirror.pixel[x][y].blue = aux1.blue;
+    }
+}
+return mirror;
+}
 Image invert_colors(Image img){
     Image invertedimage = img;
     for (unsigned int i = 0; i < invertedimage.height; ++i) {
@@ -191,35 +223,7 @@ int main() {
                 break;
             }
             case 5: { // Mirroring
-                int horizontal = 0;
-                scanf("%d", &horizontal);
-
-                int width = img.width, height = img.height;
-
-                if (horizontal == 1) width /= 2;
-                else height /= 2;
-
-                for (int i2 = 0; i2 < height; ++i2) {
-                    for (int j = 0; j < width; ++j) {
-                        int x = i2, y = j;
-
-                        if (horizontal == 1) y = img.width - 1 - j;
-                        else x = img.height - 1 - i2;
-
-                        Pixel aux1;
-                        aux1.red = img.pixel[i2][j].red;
-                        aux1.green = img.pixel[i2][j].green;
-                        aux1.blue = img.pixel[i2][j].blue;
-
-                        img.pixel[i2][j].red = img.pixel[x][y].red;
-                        img.pixel[i2][j].green = img.pixel[x][y].green;
-                        img.pixel[i2][j].blue = img.pixel[x][y].blue;
-
-                        img.pixel[x][y].red = aux1.red;
-                        img.pixel[x][y].green = aux1.green;
-                        img.pixel[x][y].blue = aux1.blue;
-                    }
-                }
+                img = mirroring(img);
                 break;
             }
             case 6: { // Color Inversion
