@@ -12,17 +12,29 @@ typedef struct _image {
         unsigned int height;
 } Image;
 
+int maximum(int a, int b) {
+    if (a > b)
+        return a;
+    return b;
+}
+
+int minimum(int a, int b){
+    if(a < b)
+      return a;
+    return b;
+}
+
 
 Image grey_scale(Image img) {
         for (unsigned int i = 0; i < img.height; ++i) {
                 for (unsigned int j = 0; j < img.width; ++j) {
-                        int media = img.pixel[i][j].red +
+                        int average = img.pixel[i][j].red +
                                     img.pixel[i][j].green +
                                     img.pixel[i][j].blue;
-                        media /= 3;
-                        img.pixel[i][j].red = media;
-                        img.pixel[i][j].green = media;
-                        img.pixel[i][j].blue = media;
+                        average /= 3;
+                        img.pixel[i][j].red = average;
+                        img.pixel[i][j].green = average;
+                        img.pixel[i][j].blue = average;
                 }
         }
 
@@ -60,24 +72,24 @@ Image blur(Image img) {
 
         for (unsigned int i = 0; i < blurring.height; ++i) {
                 for (unsigned int j = 0; j < blurring.width; ++j) {
-                        Pixel media = {0, 0, 0};
+                        Pixel average = {0, 0, 0};
 
-                        int menor_h = (blurring.height - 1 > i + size/2) ? i + size/2 : blurring.height - 1;
-                        int min_w = (blurring.width - 1 > j + size/2) ? j + size/2 : blurring.width - 1;
-                        for(int x = (0 > i - size/2 ? 0 : i - size/2); x <= menor_h; ++x) {
-                                for(int y = (0 > j - size/2 ? 0 : j - size/2); y <= min_w; ++y) {
-                                        media.red += blurring.pixel[x][y].red;
-                                        media.green += blurring.pixel[x][y].green;
-                                        media.blue += blurring.pixel[x][y].blue;
+                        int minor_height = minimum(i + size/2, blurring.height -1);
+                        int minor_width = minimum(j + size/2, blurring.width - 1);
+                          for(int x = maximum(0, i - size/2); x <= minor_height; ++x) {
+                              for(int y = maximum(0, j - size/2); y <= minor_width; ++y) {
+                                        average.red += blurring.pixel[x][y].red;
+                                        average.green += blurring.pixel[x][y].green;
+                                        average.blue += blurring.pixel[x][y].blue;
                                 }
                         }
-                        media.red /= size * size;
-                        media.green /= size * size;
-                        media.blue /= size * size;
+                        average.red /= size * size;
+                        average.green /= size * size;
+                        average.blue /= size * size;
 
-                        blurring.pixel[i][j].red = media.red;
-                        blurring.pixel[i][j].green = media.green;
-                        blurring.pixel[i][j].blue = media.blue;
+                        blurring.pixel[i][j].red = average.red;
+                        blurring.pixel[i][j].green = average.green;
+                        blurring.pixel[i][j].blue = average.blue;
                 }
         }
 
@@ -114,21 +126,21 @@ Image mirroring(Image img){
         if (horizontal == 1) width /= 2;
         else height /= 2;
 
-        for (int i2 = 0; i2 < height; ++i2) {
+        for (int i = 0; i < height; ++i) {
                 for (int j = 0; j < width; ++j) {
-                        int x = i2, y = j;
+                        int x = i, y = j;
 
                         if (horizontal == 1) y = img.width - 1 - j;
-                        else x = img.height - 1 - i2;
+                        else x = img.height - 1 - i;
 
                         Pixel aux1;
-                        aux1.red = img.pixel[i2][j].red;
-                        aux1.green = img.pixel[i2][j].green;
-                        aux1.blue = img.pixel[i2][j].blue;
+                        aux1.red = img.pixel[i][j].red;
+                        aux1.green = img.pixel[i][j].green;
+                        aux1.blue = img.pixel[i][j].blue;
 
-                        mirror.pixel[i2][j].red = mirror.pixel[x][y].red;
-                        mirror.pixel[i2][j].green = mirror.pixel[x][y].green;
-                        mirror.pixel[i2][j].blue = mirror.pixel[x][y].blue;
+                        mirror.pixel[i][j].red = mirror.pixel[x][y].red;
+                        mirror.pixel[i][j].green = mirror.pixel[x][y].green;
+                        mirror.pixel[i][j].blue = mirror.pixel[x][y].blue;
 
                         mirror.pixel[x][y].red = aux1.red;
                         mirror.pixel[x][y].green = aux1.green;
