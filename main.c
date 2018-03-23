@@ -64,40 +64,43 @@ Image sepia_filter(Image img){
 Image blur(Image img) {
     int size = 0;
     scanf("%d", &size);
-    Image image = img;
+    Image blurring = img;
 
-    for (unsigned int i = 0; i < image.height; ++i) {
-        for (unsigned int j = 0; j < image.width; ++j) {
+    for (unsigned int i = 0; i < blurring.height; ++i) {
+        for (unsigned int j = 0; j < blurring.width; ++j) {
             Pixel media = {0, 0, 0};
 
-            int menor_h = (image.height - 1 > i + T/2) ? i + T/2 : image.height - 1;
-            int min_w = (image.width - 1 > j + T/2) ? j + T/2 : image.width - 1;
-            for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_h; ++x) {
-                for(int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_w; ++y) {
-                    media.red += image.pixel[x][y].red;
-                    media.green += image.pixel[x][y].green;
-                    media.blue += image.pixel[x][y].blue;
+            int menor_h = (blurring.height - 1 > i + size/2) ? i + size/2 : blurring.height - 1;
+            int min_w = (blurring.width - 1 > j + size/2) ? j + size/2 : blurring.width - 1;
+            for(int x = (0 > i - size/2 ? 0 : i - size/2); x <= menor_h; ++x) {
+                for(int y = (0 > j - size/2 ? 0 : j - size/2); y <= min_w; ++y) {
+                    media.red += blurring.pixel[x][y].red;
+                    media.green += blurring.pixel[x][y].green;
+                    media.blue += blurring.pixel[x][y].blue;
                 }
             }
-            media.red /= T * T;
-            media.green /= T * T;
-            media.blue /= T * T;
+            media.red /= size * size;
+            media.green /= size * size;
+            media.blue /= size * size;
 
-            image.pixel[i][j].red = media.red;
-            image.pixel[i][j].green = media.green;
-            image.pixel[i][j].blue = media.blue;
+            blurring.pixel[i][j].red = media.red;
+            blurring.pixel[i][j].green = media.green;
+            blurring.pixel[i][j].blue = media.blue;
         }
     }
 
-    return image;
+    return blurring;
 }
 
 Image rotate90right(Image img) {
+  int number_of_times = 0;
+  scanf("%d", &number_of_times);
+  number_of_times %= 4;
     Image rotated;
 
     rotated.width = img.height;
     rotated.height = img.width;
-
+    for (int j = 0; j < number_of_times; ++j) {
     for (unsigned int i = 0, y = 0; i < rotated.height; ++i, ++y) {
         for (int j = rotated.width - 1, x = 0; j >= 0; --j, ++x) {
             rotated.pixel[i][j].red = img.pixel[x][y].red;
@@ -105,6 +108,7 @@ Image rotate90right(Image img) {
             rotated.pixel[i][j].blue = img.pixel[x][y].blue;
         }
     }
+  }
 
     return rotated;
 }
@@ -217,12 +221,7 @@ int main() {
                 break;
             }
             case 4: { // Rotation
-                int number_of_times = 0;
-                scanf("%d", &number_of_times);
-                number_of_times %= 4;
-                for (int j = 0; j < number_of_times; ++j) {
                     img = rotate90right(img);
-                }
                 break;
             }
             case 5: { // Mirroring
